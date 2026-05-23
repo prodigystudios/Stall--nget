@@ -228,10 +228,7 @@ export default async function LoginPage({
                     Saknar du konto?
                   </h3>
                   <p className="mt-3 max-w-xl text-sm leading-7 text-muted sm:text-base">
-                    Skapa ett konto med namn, e-post och lösenord i ett eget fönster.
-                  </p>
-                  <p className="mt-3 max-w-xl text-sm leading-7 text-muted sm:text-base">
-                    Du kan behöva verifiera din e-post innan första inloggningen. Kontrollera gärna även skräpposten.
+                    Skapa ett konto med namn, e-post och lösenord i ett eget fönster så kan du komma igång direkt.
                   </p>
                 </div>
 

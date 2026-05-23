@@ -52,3 +52,37 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
+[id^="day-"] {
+  transition:
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease,
+    transform 180ms ease;
+}
+
+[id^="day-"]:target {
+  background-color: color-mix(in oklab, var(--surface) 78%, #f3dcc0);
+  border-color: color-mix(in oklab, var(--accent) 65%, var(--border));
+  box-shadow:
+    0 0 0 5px color-mix(in oklab, var(--accent) 24%, transparent),
+    0 24px 80px -42px rgba(107, 66, 38, 0.9);
+  transform: translateY(-2px);
+}
+
+[id^="day-"]:target::before {
+  content: "Vald dag";
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1;
+  border-radius: 999px;
+  background: var(--accent);
+  color: white;
+  padding: 0.45rem 0.8rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  box-shadow: 0 10px 28px -18px rgba(107, 66, 38, 0.9);
+}

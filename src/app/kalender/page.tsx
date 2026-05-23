@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CalendarGrid } from "@/components/calendar/calendar-grid";
+import { CalendarOverviewGrid } from "@/components/calendar/calendar-overview-grid";
 import { CalendarScrollRestorer } from "@/components/calendar/calendar-scroll-restorer";
 import { SetupCallout } from "@/components/layout/setup-callout";
 import { SiteHeader } from "@/components/layout/site-header";
@@ -23,6 +24,7 @@ export default async function KalenderPage({
   const status = getValue(params.status);
   const error = getValue(params.error);
   const month = getValue(params.month);
+  const view = getValue(params.view) === "booking" ? "booking" : "overview";
   const viewModel = await getCalendarViewModel(month);
 
   const totalSlots = viewModel.days.reduce((sum, day) => sum + day.slots.length, 0);
@@ -42,7 +44,7 @@ export default async function KalenderPage({
         <SiteHeader
           currentUserName={viewModel.currentUser?.displayName ?? null}
           isConfigured={viewModel.isConfigured}
-          sourceLabel={viewModel.currentUser ? "Aktiv" : "Kalender"}
+          sourceLabel={view === "overview" ? "Översikt" : viewModel.currentUser ? "Aktiv" : "Kalender"}
         />
 
         <section className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr_0.8fr_0.8fr]">
@@ -52,15 +54,30 @@ export default async function KalenderPage({
               {viewModel.monthLabel}
             </h2>
             <p className="mt-3 max-w-xl text-sm leading-7 text-muted">
-              Vyn visar månadens morgon- och kvällspass för fredag till söndag
-              samt röda dagar och högtider som lagts in i databasen.
+              {view === "overview"
+                ? "Översikten visar alla relevanta bokningsdagar i månaden och vem som redan har tagit morgon- eller kvällspassen."
+                : "Vyn visar månadens morgon- och kvällspass för fredag till söndag samt röda dagar och högtider som lagts in i databasen."}
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
+              <Button
+                asChild
+                variant={view === "booking" ? "primary" : "secondary"}
+              >
+                <Link href={`/kalender?month=${viewModel.monthKey}&view=booking`}>Bokningsvy</Link>
+              </Button>
+              <Button
+                asChild
+                variant={view === "overview" ? "primary" : "secondary"}
+              >
+                <Link href={`/kalender?month=${viewModel.monthKey}&view=overview`}>Översiktsvy</Link>
+              </Button>
+            </div>
+            <div className="mt-3 flex flex-wrap gap-3">
               <Button asChild variant="secondary">
-                <Link href={`/kalender?month=${viewModel.previousMonthKey}`}>Föregående månad</Link>
+                <Link href={`/kalender?month=${viewModel.previousMonthKey}&view=${view}`}>Föregående månad</Link>
               </Button>
               <Button asChild variant="secondary">
-                <Link href={`/kalender?month=${viewModel.nextMonthKey}`}>Nästa månad</Link>
+                <Link href={`/kalender?month=${viewModel.nextMonthKey}&view=${view}`}>Nästa månad</Link>
               </Button>
             </div>
           </div>
@@ -108,14 +125,18 @@ export default async function KalenderPage({
           <StatusPill tone="warning">Ledigt</StatusPill>
           <StatusPill tone="success">Mitt pass</StatusPill>
           <StatusPill tone="danger">Upptaget</StatusPill>
-          <StatusPill tone="dark">Månadsvy</StatusPill>
+          <StatusPill tone="dark">{view === "overview" ? "Översiktsvy" : "Bokningsvy"}</StatusPill>
         </div>
 
-        <CalendarGrid
-          days={viewModel.days}
-          disabled={!viewModel.currentUser}
-          monthKey={viewModel.monthKey}
-        />
+        {view === "overview" ? (
+          <CalendarOverviewGrid days={viewModel.days} monthKey={viewModel.monthKey} />
+        ) : (
+          <CalendarGrid
+            days={viewModel.days}
+            disabled={!viewModel.currentUser}
+            monthKey={viewModel.monthKey}
+          />
+        )}
       </div>
     </main>
   );

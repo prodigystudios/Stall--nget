@@ -43,10 +43,7 @@ export function SignupModal({ action }: SignupModalProps) {
                   Ny i Stall Änget?
                 </h3>
                 <p className="mt-3 text-sm leading-7 text-muted sm:text-base">
-                  Fyll i namn, e-post och lösenord så kan du börja boka pass direkt.
-                </p>
-                <p className="mt-3 rounded-[1.25rem] bg-[#f7efe6] px-4 py-3 text-sm leading-7 text-muted sm:text-base">
-                  När kontot är skapat kan du behöva verifiera din e-post innan första inloggningen. Om mailet inte dyker upp direkt, kontrollera även skräpposten.
+                  Fyll i namn, e-post och lösenord så är kontot klart att använda direkt.
                 </p>
               </div>
 

@@ -11,14 +11,16 @@ const toneClasses = {
 type StatusPillProps = {
   tone?: keyof typeof toneClasses;
   children: React.ReactNode;
+  className?: string;
 };
 
-export function StatusPill({ tone = "neutral", children }: StatusPillProps) {
+export function StatusPill({ tone = "neutral", children, className }: StatusPillProps) {
   return (
     <span
       className={cn(
         "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em]",
         toneClasses[tone],
+        className,
       )}
     >
       {children}

@@ -6,6 +6,10 @@ const CALENDAR_SCROLL_KEY = "stall-anget-calendar-scroll";
 
 export function CalendarScrollRestorer() {
   useEffect(() => {
+    if (window.location.hash) {
+      return;
+    }
+
     const storedValue = window.sessionStorage.getItem(CALENDAR_SCROLL_KEY);
 
     if (!storedValue) {

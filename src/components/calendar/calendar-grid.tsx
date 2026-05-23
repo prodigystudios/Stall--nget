@@ -9,14 +9,17 @@ type CalendarGridProps = {
   monthKey: string;
 };
 
+const getDayAnchorId = (isoDate: string) => `day-${isoDate}`;
+
 export function CalendarGrid({ days, disabled, monthKey }: CalendarGridProps) {
   return (
     <section className="grid gap-5 xl:grid-cols-2">
       {days.map((day) => (
         <article
           key={day.isoDate}
+          id={getDayAnchorId(day.isoDate)}
           className={cn(
-            "rounded-[2rem] border border-border/80 bg-surface/90 p-5 shadow-[0_20px_70px_-50px_rgba(66,33,12,0.55)]",
+            "relative scroll-mt-32 rounded-[2rem] border border-border/80 bg-surface/90 p-5 shadow-[0_20px_70px_-50px_rgba(66,33,12,0.55)]",
             day.isSpecialDate && "bg-[linear-gradient(180deg,rgba(255,247,236,0.98),rgba(255,250,244,0.92))] border-accent/35 shadow-[0_20px_70px_-50px_rgba(143,92,56,0.45)]",
           )}
         >

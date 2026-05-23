@@ -65,7 +65,7 @@ export function BookingCard({ slot, disabled, monthKey }: BookingCardProps) {
           : "Ingen har tagit passet ännu."}
       </div>
 
-  <div className="mt-5">
+      <div className="mt-5">
         {slot.isMine ? (
           <form action={releaseDutyAction} onSubmit={persistScrollPosition}>
             <input type="hidden" name="slotDefinitionId" value={slot.id} />

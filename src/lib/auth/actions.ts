@@ -9,6 +9,12 @@ const createRedirectUrl = (pathname: string, values: Record<string, string>) => 
   return `${pathname}?${params.toString()}`;
 };
 
+const verificationMessage =
+  "Kontot är skapat. Kontrollera din e-post och verifiera kontot innan du loggar in. Titta även i skräpposten om mailet inte syns direkt.";
+
+const verificationRateLimitMessage =
+  "Kontot kan vara skapat, men verifieringsmailet kunde inte skickas just nu eftersom gränsen för e-postutskick är nådd. Kontrollera om mailet redan kommit, även i skräpposten. Annars behöver ni vänta en stund innan ni försöker igen.";
+
 export async function signInAction(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
@@ -83,12 +89,42 @@ export async function signUpAction(formData: FormData) {
   });
 
   if (error) {
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (!signInError) {
+      revalidatePath("/", "layout");
+      redirect(
+        createRedirectUrl("/kalender", {
+          status: "Kontot är skapat och du är nu inloggad.",
+        }),
+      );
+    }
+
+    if (signInError.message.toLowerCase().includes("email not confirmed")) {
+      redirect(
+        createRedirectUrl("/login", {
+          status: verificationMessage,
+        }),
+      );
+    }
+
+    if (error.message.toLowerCase().includes("email rate limit exceeded")) {
+      redirect(
+        createRedirectUrl("/login", {
+          status: verificationRateLimitMessage,
+        }),
+      );
+    }
+
     redirect(
       createRedirectUrl("/login", {
         error:
           error.message === "User already registered"
             ? "Det finns redan ett konto med den här e-posten."
-            : "Det gick inte att skapa kontot just nu.",
+            : `Det gick inte att skapa kontot just nu. (${error.message})`,
       }),
     );
   }
@@ -105,8 +141,7 @@ export async function signUpAction(formData: FormData) {
 
   redirect(
     createRedirectUrl("/login", {
-      status:
-        "Kontot är skapat. Kontrollera din e-post och verifiera kontot innan du loggar in. Titta även i skräpposten om mailet inte syns direkt.",
+      status: verificationMessage,
     }),
   );
 }
